@@ -1,5 +1,5 @@
 [project]
-name = "lola-py-sdk"
+name = "lolapy"
 version = "0.1.1"
 authors = [
   { name="Alejandro Pirola", email="alejandro@leapfinancial.com" },
@@ -12,6 +12,13 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages]
+find = {}  # Scan the project directory with the default parameters
 
 [project.urls]
 "Homepage" = "https://github.com/alejamp/lola-py-sdk"
