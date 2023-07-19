@@ -3,9 +3,7 @@ import requests
 from flask import Flask, request
 import json
 import os
-from lola.lola_message_sender import LolaMessageSender
-from lola.lola_state_manager import LolaStateManager
-from lola.lola_context import LolaContext
+from lolapy.lola_context import LolaContext
 
 
 

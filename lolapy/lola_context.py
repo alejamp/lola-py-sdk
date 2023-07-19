@@ -1,7 +1,7 @@
 
 
-from lola.lola_message_sender import LolaMessageSender
-from lola.lola_state_manager import LolaStateManager
+from lolapy.lola_message_sender import LolaMessageSender
+from lolapy.lola_state_manager import LolaStateManager
 
 class LolaContext:
 
