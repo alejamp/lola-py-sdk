@@ -1,0 +1,18 @@
+[project]
+name = "lola-py-sdk"
+version = "0.1.1"
+authors = [
+  { name="Alejandro Pirola", email="alejandro@leapfinancial.com" },
+]
+description = "This project is a Python SDK for the Prompter API. It is intended to be used by developers who want to integrate Lola into their own applications."
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/alejamp/lola-py-sdk"
+"Bug Tracker" = "https://github.com/alejamp/lola-py-sdk/issues"
