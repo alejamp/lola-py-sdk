@@ -68,15 +68,15 @@ class LolaSDK:
             if event is None:
                 return self.on_error('Invalid event')   
             
-            ctx = self.context(event['lead'])
-            lead = event['lead']
-            result = self.__process_event(lead, ctx, event)
+            session = self.__getSession(event['lead'])
+            ctx = self.context(session)
+            result = self.__process_event(session, ctx, event)
             return json.dumps(result), 200, {'Content-Type': 'application/json'}
 
         app.run(host=self.host, port=self.port)
 
-    def context(self, lead):
-        return LolaContext(lead, self.lola_token, self.prompter_url, self.timeout)
+    def context(self, session):
+        return LolaContext(session, self.lola_token, self.prompter_url, self.timeout)
     
     def add_event(self, event):
         # check if event is already in self.events
@@ -106,16 +106,16 @@ class LolaSDK:
             return handler
         return decorator
 
-    def __process_event(self, lead, ctx, event):
-
-            
+    def __getSession(self, lead):
         # generate hash as a unique identifier for this lead
         hlead = get_invariant_hash(lead)
-
         session = {
             'id': hlead,
             'lead': lead,
         }
+        return session
+
+    def __process_event(self, session, ctx, event):
 
         event_type = event.get('event')
         if event_type == 'onCommand':

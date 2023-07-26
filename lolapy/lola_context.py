@@ -5,14 +5,18 @@ from lolapy.lola_state_manager import LolaStateManager
 
 class LolaContext:
 
-    def __init__(self, lead, lola_token, prompter_url, timeout):
+    def __init__(self, session, lola_token, prompter_url, timeout):
         self.lola_token = lola_token
         self.prompter_url = prompter_url 
-        self.lead = lead
+        self.session = session
         self.timeout = timeout
         
-        self.state = LolaStateManager(self.lead, self.lola_token, self.prompter_url)
-        self.messanger = LolaMessageSender(self.lead, self.lola_token, self.prompter_url)
+        self.state = LolaStateManager(self.session['lead'], self.lola_token, self.prompter_url)
+        self.messanger = LolaMessageSender(self.session['lead'], self.lola_token, self.prompter_url)
         # TODO
         # history
         # services
+
+    def set_timeout(self, timeout_in_seconds, label=None):
+        # ctx.timeout.set(session, ctx, 5, '5_seconds_without_message')
+        self.timeout.set(self.session, self, timeout_in_seconds, label)

@@ -14,6 +14,15 @@
 ### Fixed
 - Bug in feature C that caused crashes -->
 
+## [0.2.2] - 2021-08-15
+
+### Changed
+- Add easy way to set timeout with less code: 
+```python 
+ctx.set_timeout(5, '5_seconds_without_message')
+```
+
+
 ## [0.2.0] - 2021-08-01
 
 ### Added
