@@ -1,6 +1,6 @@
 [project]
 name = "lolapy"
-version = "0.1.1"
+version = "0.1.2"
 authors = [
   { name="Alejandro Pirola", email="alejandro@leapfinancial.com" },
 ]
@@ -12,6 +12,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+dependencies = []
 
 [build-system]
 requires = ["setuptools"]

@@ -4,6 +4,7 @@ from flask import Flask, request
 import json
 import os
 from lolapy.lola_context import LolaContext
+from lolapy.lola_utils import get_invariant_hash
 
 
 
@@ -94,14 +95,24 @@ class LolaSDK:
 
 
     def __process_event(self, lead, ctx, event):
+
+            
+        # generate hash as a unique identifier for this lead
+        hlead = get_invariant_hash(lead)
+
+        session = {
+            'id': hlead,
+            'lead': lead,
+        }
+
         event_type = event.get('event')
         if event_type == 'onCommand':
             command_name = event['data'].get('name')
             if command_name in self.cmd_handlers:
-                return self.cmd_handlers[command_name](lead, ctx, event)
+                return self.cmd_handlers[command_name](session, ctx, event)
             
         if event_type in self.event_handlers:
-            return self.event_handlers[event_type](lead, ctx, event['data']['message'])
+            return self.event_handlers[event_type](session, ctx, event['data']['message'])
         
         return self.on_error(f'Unknown event type: {event_type}')
     
