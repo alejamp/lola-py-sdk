@@ -32,7 +32,7 @@ Lola Python SDK provides a decorator to register your functions as commands. The
 
 ```python
 @lola.on_command('get_cryptocurrency_price')
-def hanfler(lead, ctx: LolaContext, request):
+def hanfler(session, ctx: LolaContext, request):
 ```
 
 
@@ -40,7 +40,7 @@ For example if you register a function with the command name `get_cryptocurrency
 
 ```python
 @lola.on_command('get_cryptocurrency_price')
-def handle_get_cryptocurrency_price(lead, ctx: LolaContext, request):
+def handle_get_cryptocurrency_price(session, ctx: LolaContext, request):
     cryptocurrency = request['data']['args']['cryptocurrency']
     currency = request['data']['args']['currency']
 
@@ -61,7 +61,7 @@ def handle_get_cryptocurrency_price(lead, ctx: LolaContext, request):
 ```
 
 The arguments to the function are:
- - lead: The lead object from Prompter API that allows you to access the message routung information. 
+ - session: The session object from Prompter API that allows you to get a unique session ID for the user and has the lead object which contains the required data to route messages to the user
  - ctx: The LolaContext object that allows you to access the user's context such as state, history and messanger
  - request: The request object from Prompter API that contains the data sent by Lola in this case the command and arguments
 
@@ -76,7 +76,7 @@ Lola Python SDK provides decorators to register your functions to events. The de
 
 ```python 
 @lola.on_event('onTextMessage')
-def handle_text_message(lead, ctx: LolaContext, msg):
+def handle_text_message(session, ctx: LolaContext, msg):
     
     print(f'Got text message: {msg["text"]}')
     s = ctx.state.get()
@@ -93,6 +93,26 @@ def handle_text_message(lead, ctx: LolaContext, msg):
     # This message will be sent to the client
     # And it will interrupt the flow to the AI
     # return f'You said2: {msg["text"]}'
+```
+
+### Register for Timeouts
+
+Now you can set a timeout for the user to respond to a message and handle the timeout event. Only one timeout can be set per session. If you set a new timeout, the previous timeout will be overwritten (time and label).
+
+```python
+@lola.on_event('onTextMessage')
+def handle_text_message(session, ctx: LolaContext, msg):
+    
+    # Set timeout for 5 seconds, after 5 seconds the handle_timeout function will be called
+    # you can set a label to identify the timeout
+    ctx.timeout.set(session, ctx, 5, '5_seconds_without_message')
+
+# Handle timeout event
+@lola.on_timeout()
+def handle_timeout(session, ctx: LolaContext, label):
+    print(f'Timeout reached for label: {label}')
+    ctx.messanger.send_text_message(f'Timeout reached for label: {label}')
+
 ```
 
 

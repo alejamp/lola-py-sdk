@@ -4,6 +4,7 @@ from flask import Flask, request
 import json
 import os
 from lolapy.lola_context import LolaContext
+from lolapy.lola_timeout import LolaTimeout
 from lolapy.lola_utils import get_invariant_hash
 
 
@@ -18,8 +19,10 @@ class LolaSDK:
         self.path = path
         self.cmd_handlers = {}
         self.event_handlers = {}
+        self.timeout_handler = None
         self.callback_handlers = {}
         self.events = []
+        self.timeout = None
 
     def listen(self):
 
@@ -44,6 +47,9 @@ class LolaSDK:
         # Show list of events to listen:
         print(f'Listening to events: {self.events}')
 
+        # Start timeout thread
+        if self.timeout:
+            self.timeout.start()
 
         # Start Flask server
         app = Flask(__name__)
@@ -70,7 +76,7 @@ class LolaSDK:
         app.run(host=self.host, port=self.port)
 
     def context(self, lead):
-        return LolaContext(lead, self.lola_token, self.prompter_url)
+        return LolaContext(lead, self.lola_token, self.prompter_url, self.timeout)
     
     def add_event(self, event):
         # check if event is already in self.events
@@ -92,7 +98,13 @@ class LolaSDK:
             self.event_handlers[name] = handler
             return handler
         return decorator
-
+    
+    def on_timeout(self):
+        def decorator(handler):
+            print ('LolaSDK -> Setting timeout handler')
+            self.timeout = LolaTimeout(handler)
+            return handler
+        return decorator
 
     def __process_event(self, lead, ctx, event):
 
