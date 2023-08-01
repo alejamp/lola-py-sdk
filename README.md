@@ -116,6 +116,15 @@ def handle_timeout(session, ctx: LolaContext, label):
 ```
 
 
+### Debug mode
+
+You can enable debug mode to see the logs from the SDK. This is useful for debugging your assistant. Logtail is used to display the logs from the server in your console.
+
+```python
+lola.listen(debug=True)
+```
+
+
 ## Contributing
 
 Guidelines for contributing to the project, including how to report bugs, suggest enhancements, and submit pull requests.

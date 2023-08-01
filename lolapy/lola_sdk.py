@@ -1,9 +1,12 @@
 
+import asyncio
+import threading
 import requests
 from flask import Flask, request
 import json
 import os
 from lolapy.lola_context import LolaContext
+from lolapy.lola_logtail import connectLogTail, syncConnectLogTail
 from lolapy.lola_timeout import LolaTimeout
 from lolapy.lola_utils import get_invariant_hash
 
@@ -24,7 +27,7 @@ class LolaSDK:
         self.events = []
         self.timeout = None
 
-    def listen(self):
+    def listen(self, debug=False):
 
         if not self.lola_token:
             raise Exception('LOLA_TOKEN not set')
@@ -33,9 +36,8 @@ class LolaSDK:
             raise Exception('WEBHOOK_URL not set')
 
         # check if self.events is empty
-        if not self.events:
-            raise Exception('Events not set')
-        
+        # if not self.events:
+        #     raise Exception('Events not set')
         
         # Register webhook
         url = f'{self.prompter_url}/api/webhook/register'
@@ -72,6 +74,12 @@ class LolaSDK:
             ctx = self.context(session)
             result = self.__process_event(session, ctx, event)
             return json.dumps(result), 200, {'Content-Type': 'application/json'}
+
+
+        if (debug):
+            print('Starting logtail thread!!!!!!')
+            download_thread = threading.Thread(target=syncConnectLogTail, name="Logtail", args=(self.prompter_url, self.lola_token,))
+            download_thread.start()
 
         app.run(host=self.host, port=self.port)
 

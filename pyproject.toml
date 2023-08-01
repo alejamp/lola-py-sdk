@@ -1,6 +1,6 @@
 [project]
 name = "lolapy"
-version = "0.2.2"
+version = "0.3.0"
 authors = [
   { name="Alejandro Pirola", email="alejandro@leapfinancial.com" },
 ]
@@ -13,7 +13,10 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-  'schedule>=1.2.0'
+  'schedule>=1.2.0',
+  'colorama>=0.4.6',
+  'python-socketio>=5.8.0',
+  'websocket-client>=1.6.1'
 ]
 
 [build-system]

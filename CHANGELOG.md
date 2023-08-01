@@ -13,8 +13,14 @@
 
 ### Fixed
 - Bug in feature C that caused crashes -->
+## [0.3.0] - 2023-08-1
 
-## [0.2.2] - 2021-08-15
+### Added
+- New support for debugging. Now you can start lola SDK with ``` lola.listan(debug=True) ``` 
+this will print all the debug messages that are sent and received from the server.
+
+
+## [0.2.2] - 2023-07-15
 
 ### Changed
 - Add easy way to set timeout with less code: 
@@ -23,7 +29,7 @@ ctx.set_timeout(5, '5_seconds_without_message')
 ```
 
 
-## [0.2.0] - 2021-08-01
+## [0.2.0] - 2023-07-10
 
 ### Added
 - Session Id to session object, this is the unique id for the user session
