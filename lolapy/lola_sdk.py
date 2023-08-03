@@ -13,7 +13,15 @@ from lolapy.lola_utils import get_invariant_hash
 
 
 class LolaSDK:
-    def __init__(self, lola_token=None, webhook_url=None, prompter_url=None, host='localhost', port=5000, path='/event'):
+    def __init__(self, 
+                 lola_token=None, 
+                 webhook_url=None, 
+                 prompter_url=None, 
+                 host='localhost', 
+                 port=5000, 
+                 path='/event',
+                 redis_url=None,
+                 ):
         self.lola_token = lola_token or os.environ.get('LOLA_TOKEN')
         self.webhook_url = webhook_url
         self.prompter_url = prompter_url or os.environ.get('PROMPTER_URL', 'http://localhost:4000')
@@ -26,6 +34,7 @@ class LolaSDK:
         self.callback_handlers = {}
         self.events = []
         self.timeout = None
+        self.redis_url = redis_url
 
     def listen(self, debug=False):
 
@@ -84,7 +93,7 @@ class LolaSDK:
         app.run(host=self.host, port=self.port)
 
     def context(self, session):
-        return LolaContext(session, self.lola_token, self.prompter_url, self.timeout)
+        return LolaContext(session, self.lola_token, self.prompter_url, self.timeout, self.redis_url)
     
     def add_event(self, event):
         # check if event is already in self.events
