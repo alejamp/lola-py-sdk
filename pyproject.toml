@@ -18,7 +18,8 @@ dependencies = [
   'python-socketio>=5.8.0',
   'websocket-client>=1.6.1',
   'redis>=4.6.0',
-  'requests>=2.27.1'
+  'requests>=2.27.1',
+  'Flask>=2.2.2'
 ]
 
 [build-system]
