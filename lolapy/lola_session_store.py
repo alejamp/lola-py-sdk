@@ -12,7 +12,7 @@ class LolaSessionStore:
             print( f'{Fore.WHITE}LolaSessionStore -> {Fore.GREEN}Using RedisSessionStore{Style.RESET_ALL}')
             self.store = RedisSessionStore(self.redis_url)
         else:
-            print( f'{Fore.WHITE}LolaSessionStore -> {Fore.RED}Using RedisSessionStore{Style.RESET_ALL}')
+            print( f'{Fore.WHITE}LolaSessionStore -> {Fore.RED}Using InMemorySessionStore{Style.RESET_ALL}')
             self.store = InMemorySessionStore()
 
     def __key(self, key):
