@@ -65,6 +65,10 @@ class LolaSDK:
         # Start Flask server
         app = Flask(__name__)
 
+        @app.route('/health', methods=['GET'])
+        def health_check():
+            return 'OK'
+
         @app.route('/event', methods=['POST'])
         def handle_event():
             # Example event:
