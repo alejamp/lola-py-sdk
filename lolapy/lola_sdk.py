@@ -22,9 +22,9 @@ class LolaSDK:
                  path='/event',
                  redis_url=None,
                  ):
-        self.lola_token = lola_token or os.environ.get('LOLA_TOKEN')
+        self.lola_token = lola_token 
         self.webhook_url = webhook_url
-        self.prompter_url = prompter_url or os.environ.get('PROMPTER_URL', 'http://localhost:4000')
+        self.prompter_url = prompter_url
         self.host = host
         self.port = port
         self.path = path
@@ -35,6 +35,12 @@ class LolaSDK:
         self.events = []
         self.timeout = None
         self.redis_url = redis_url
+        # print init info
+        print(f'LOLA_TOKEN: {self.lola_token}')
+        print(f'WEBHOOK_URL: {self.webhook_url}')
+        print(f'PROMPTER_URL: {self.prompter_url}')
+        print(f'HOST: {self.host}:{self.port}')
+        print(f'REDIS_URL: {self.redis_url}')        
 
     def listen(self, debug=False):
 
