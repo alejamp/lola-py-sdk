@@ -1,10 +1,8 @@
-
-import asyncio
 import threading
 import requests
 from flask import Flask, request
 import json
-import os
+from colorama import Fore, Style
 from lolapy.lola_context import LolaContext
 from lolapy.lola_logtail import connectLogTail, syncConnectLogTail
 from lolapy.lola_timeout import LolaTimeout
@@ -83,20 +81,23 @@ class LolaSDK:
             # "event": "onCommand", 
             # "data": {"name": "get_cryptocurrency_price", "args": {"cryptocurrency": "ETH", "currency": "USD"}}
             # }'
-            print('Received event')
+
             print(request)
             event = request.json
             if event is None:
-                return self.on_error('Invalid event')   
+                return self.on_error('Invalid event') 
             
-            session = self.__getSession(event['lead'])
+            print(f'Received event: {event}')  
+            
+            session = self.__buildSession(event['lead'])
             ctx = self.context(session)
             result = self.__process_event(session, ctx, event)
             return json.dumps(result), 200, {'Content-Type': 'application/json'}
 
 
         if (debug):
-            print('Starting logtail thread!!!!!!')
+            print(f'{Fore.RED}Debug mode enabled: starting logtail thread!{Style.RESET_ALL}')
+            print(f'{Fore.RED}This mode is not recommended in prodcution{Style.RESET_ALL}')
             download_thread = threading.Thread(target=syncConnectLogTail, name="Logtail", args=(self.prompter_url, self.lola_token,))
             download_thread.start()
 
@@ -133,7 +134,7 @@ class LolaSDK:
             return handler
         return decorator
 
-    def __getSession(self, lead):
+    def __buildSession(self, lead):
         # generate hash as a unique identifier for this lead
         hlead = get_invariant_hash(lead)
         session = {

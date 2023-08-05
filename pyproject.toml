@@ -1,6 +1,6 @@
 [project]
 name = "lolapy"
-version = "0.4.2"
+version = "0.5.0"
 authors = [
   { name="Alejandro Pirola", email="alejandro@leapfinancial.com" },
 ]
