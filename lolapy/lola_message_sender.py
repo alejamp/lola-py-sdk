@@ -8,10 +8,16 @@ class LolaMessageSender:
         self.prompter_url = prompter_url 
         self.lead = lead
 
-    def send_text_message(self, text, appendToHistory=False):
+    def send_text_message(self, text, appendToHistory=False, isPrivate=False, blend=False):
         url = f'{self.prompter_url}/api/messanger/send/text'
         headers = {'x-lola-auth': self.lola_token, 'Content-Type': 'application/json'}
-        data = {'lead': self.lead, 'text': text, 'appendToHistory': appendToHistory}
+        data = {
+            'lead': self.lead, 
+            'text': text, 
+            'appendToHistory': appendToHistory,
+            'isPrivate': isPrivate,
+            'blend': blend
+        }
         response = requests.post(url, headers=headers, json=data)
         response.raise_for_status()
         return
