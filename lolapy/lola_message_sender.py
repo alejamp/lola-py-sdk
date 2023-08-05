@@ -22,14 +22,14 @@ class LolaMessageSender:
         response.raise_for_status()
         return
     
-    def send_image_message(self, url, text=None, appendToHistory=False, isPrivate=False):
+    def send_image_message(self, img_url, text=None, appendToHistory=False, isPrivate=False):
         url = f'{self.prompter_url}/api/messanger/send/photo'
         headers = {'x-lola-auth': self.lola_token, 'Content-Type': 'application/json'}
         data = {
             'lead': self.lead, 
             'text': text,
             'attachment': { 
-                'url': url
+                'url': img_url
             },
             'appendToHistory': appendToHistory,
             'isPrivate': isPrivate
