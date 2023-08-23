@@ -3,6 +3,7 @@ from lolapy.lola_message_sender import LolaMessageSender
 from lolapy.lola_session_store import LolaSessionStore
 from lolapy.lola_state_manager import LolaStateManager
 from lolapy.lola_stats_manager import LolaStatsManager
+from lolapy.lola_vision_manager import LolaVisionManager
 
 class LolaContext:
 
@@ -17,6 +18,7 @@ class LolaContext:
         self.messanger = LolaMessageSender(self.session['lead'], self.lola_token, self.prompter_url)
         self.stats = LolaStatsManager(self.session['lead'], self.lola_token, self.prompter_url)
         self.session_store = LolaSessionStore(self.session['id'], self.redis_url)
+        self.vision = LolaVisionManager(self.session['lead'], self.lola_token, self.prompter_url)
 
         # TODO
         # history

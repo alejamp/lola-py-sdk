@@ -58,7 +58,7 @@ class LolaSDK:
         data = {'url': (self.webhook_url or '') + self.path, 'events': self.events}
         response = requests.post(url, headers=headers, json=data)
         response.raise_for_status()
-        print('Webhook registered')
+        print(f'{Fore.GREEN}Webhook registered: {self.webhook_url}{self.path}{Style.RESET_ALL}')
         # Show list of events to listen:
         print(f'Listening to events: {self.events}')
 
