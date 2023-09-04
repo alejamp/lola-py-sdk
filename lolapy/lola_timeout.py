@@ -24,21 +24,26 @@ class LolaTimeout:
         # del jobs[session_id]
         return schedule.CancelJob
 
-    def set(self, session, ctx: LolaContext, timeout_in_seconds, label=None):
+    def set(self, session, ctx: LolaContext, timeout_in_seconds, label='default'):
         print(f'Adding timeout for {timeout_in_seconds} seconds')
-        session_id = session['id']
+        # Job_id is a combination of session_id and label
+        job_id = f'{session["id"]}:{label}'
 
         # schedule job
         job = schedule.every(timeout_in_seconds).seconds.do(
-            self.__handle_timeout, session, ctx, label)
+                self.__handle_timeout, 
+                session, 
+                ctx, 
+                label
+            )
         
         # check if exists
-        if session_id in self.jobs:
+        if job_id in self.jobs:
             # cancel job
-            schedule.cancel_job(self.jobs[session_id])
+            schedule.cancel_job(self.jobs[job_id])
 
         # register job
-        self.jobs[session_id] = job
+        self.jobs[job_id] = job
 
     def __run_async (self):
         """Continuously run, while executing pending jobs at each
