@@ -4,6 +4,7 @@ from lolapy.lola_session_store import LolaSessionStore
 from lolapy.lola_state_manager import LolaStateManager
 from lolapy.lola_stats_manager import LolaStatsManager
 from lolapy.lola_vision_manager import LolaVisionManager
+from lolapy.lola_history_manager import LolaHistoryManager
 
 class LolaContext:
 
@@ -19,6 +20,7 @@ class LolaContext:
         self.stats = LolaStatsManager(self.session['lead'], self.lola_token, self.prompter_url)
         self.session_store = LolaSessionStore(self.session['id'], self.redis_url)
         self.vision = LolaVisionManager(self.session['lead'], self.lola_token, self.prompter_url)
+        self.history = LolaHistoryManager(self.session['lead'], self.lola_token, self.prompter_url)
 
         # TODO
         # history

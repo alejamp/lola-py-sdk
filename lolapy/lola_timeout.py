@@ -24,6 +24,15 @@ class LolaTimeout:
         # del jobs[session_id]
         return schedule.CancelJob
 
+    def delete(self, session, ctx: LolaContext, label='default'):
+        print(f'Deleting timeout for session: {session["id"]}')
+        # Job_id is a combination of session_id and label
+        job_id = f'{session["id"]}:{label}'
+        if job_id in self.jobs:
+            # cancel job
+            schedule.cancel_job(self.jobs[job_id])
+            del self.jobs[job_id]
+
     def set(self, session, ctx: LolaContext, timeout_in_seconds, label='default'):
         print(f'Adding timeout for {timeout_in_seconds} seconds')
         # Job_id is a combination of session_id and label

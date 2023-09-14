@@ -1,6 +1,6 @@
 import requests
 
-class LolaStateManager:
+class LolaHistoryManager:
 
     def __init__(self, lead, lola_token, prompter_url):
         self.lola_token = lola_token
@@ -8,23 +8,15 @@ class LolaStateManager:
         self.lead = lead
 
     def get(self):    
-        url = f'{self.prompter_url}/api/state/retrieve'
+        url = f'{self.prompter_url}/api/history/retrieve'
         headers = {'x-lola-auth': self.lola_token, 'Content-Type': 'application/json'}
         data = {'lead': self.lead}
         response = requests.post(url, headers=headers, json=data)
         response.raise_for_status()
         return response.json()['state']
     
-    def set(self, state):
-        url = f'{self.prompter_url}/api/state/update'
-        headers = {'x-lola-auth': self.lola_token, 'Content-Type': 'application/json'}
-        data = {'lead': self.lead, 'state': state}
-        response = requests.post(url, headers=headers, json=data)
-        response.raise_for_status()
-        return
-    
     def set(self):
-        url = f'{self.prompter_url}/api/state/reset'
+        url = f'{self.prompter_url}/api/histry/reset'
         headers = {'x-lola-auth': self.lola_token, 'Content-Type': 'application/json'}
         data = {'lead': self.lead}
         response = requests.post(url, headers=headers, json=data)
