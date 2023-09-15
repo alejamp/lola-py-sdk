@@ -23,7 +23,7 @@ class LolaStateManager:
         response.raise_for_status()
         return
     
-    def set(self):
+    def reset(self):
         url = f'{self.prompter_url}/api/state/reset'
         headers = {'x-lola-auth': self.lola_token, 'Content-Type': 'application/json'}
         data = {'lead': self.lead}
