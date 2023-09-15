@@ -15,7 +15,7 @@ class LolaHistoryManager:
         response.raise_for_status()
         return response.json()['state']
     
-    def set(self):
+    def reset(self):
         url = f'{self.prompter_url}/api/histry/reset'
         headers = {'x-lola-auth': self.lola_token, 'Content-Type': 'application/json'}
         data = {'lead': self.lead}
