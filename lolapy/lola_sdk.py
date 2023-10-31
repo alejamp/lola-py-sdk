@@ -28,6 +28,7 @@ class LolaSDK:
         self.path = path
         self.cmd_handlers = {}
         self.event_handlers = {}
+        self.notification_handlers = {}
         self.timeout_handler = None
         self.callback_handlers = {}
         self.events = []
@@ -127,6 +128,13 @@ class LolaSDK:
             return handler
         return decorator
     
+    def on_notification(self, name):
+        def decorator(handler):
+            self.add_event('onNotification')
+            self.notification_handlers[name] = handler
+            return handler
+        return decorator
+    
     def on_timeout(self):
         def decorator(handler):
             print ('LolaSDK -> Setting timeout handler')
@@ -144,12 +152,23 @@ class LolaSDK:
         return session
 
     def __process_event(self, session, ctx, event):
-
+        
         event_type = event.get('event')
+
+        print(f'Processing event: {event_type}')
+
+        print(f'Event data: {event["data"]}')
+
         if event_type == 'onCommand':
             command_name = event['data'].get('name')
             if command_name in self.cmd_handlers:
                 return self.cmd_handlers[command_name](session, ctx, event)
+            
+        if event_type == 'onNotification':
+            notification_name = event['data'].get('name')
+            if notification_name in self.notification_handlers:
+                return self.notification_handlers[notification_name](session, ctx, event)
+        
             
         if event_type in self.event_handlers:
             return self.event_handlers[event_type](session, ctx, event['data']['message'])
