@@ -16,7 +16,7 @@ class LolaHistoryManager:
         return response.json()['state']
     
     def reset(self):
-        url = f'{self.prompter_url}/api/histry/reset'
+        url = f'{self.prompter_url}/api/history/reset'
         headers = {'x-lola-auth': self.lola_token, 'Content-Type': 'application/json'}
         data = {'lead': self.lead}
         response = requests.post(url, headers=headers, json=data)
