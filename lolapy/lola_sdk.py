@@ -7,6 +7,7 @@ from lolapy.lola_context import LolaContext
 from lolapy.lola_logtail import connectLogTail, syncConnectLogTail
 from lolapy.lola_timeout import LolaTimeout
 from lolapy.lola_utils import get_invariant_hash
+from lolapy.lola_prompt_manager import LolaPromptManager
 
 
 
@@ -34,12 +35,27 @@ class LolaSDK:
         self.events = []
         self.timeout = None
         self.redis_url = redis_url
+        self.promptstr = ""
+        self.promptstate = {}
         # print init info
         print(f'LOLA_TOKEN: {self.lola_token}')
         print(f'WEBHOOK_URL: {self.webhook_url}')
         print(f'PROMPTER_URL: {self.prompter_url}')
         print(f'HOST: {self.host}:{self.port}')
-        print(f'REDIS_URL: {self.redis_url}')        
+        print(f'REDIS_URL: {self.redis_url}')   
+    def onInitilize(self, promptId, prompt):
+        ## extract the file promp.hbr and the file state.js from the root path
+        with open(f"${prompt}.hbr") as prompt:
+            self.promptstr = prompt
+        with open(f"${prompt}.state.json") as state:
+            self.promptstate = json.load(state)
+        
+        promptManager = LolaPromptManager(lola_token=self.lola_token, prompter_url=self.prompter_url)
+        try:
+            promptManager.publishPrompt(promptid=promptId,promptName=prompt,promptFileContent=self.promptstr,state=self.promptstate)
+        except Exception as e:
+            print(f'Error publishing prompt: {e}')
+        pass     
 
     def listen(self, debug=False):
 
