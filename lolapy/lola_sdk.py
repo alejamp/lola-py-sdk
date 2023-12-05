@@ -46,7 +46,7 @@ class LolaSDK:
     def onInitilize(self, promptId, prompt):
         ## extract the file promp.hbr and the file state.js from the root path
         with open(f"{prompt}.hbr") as prompt:
-            self.promptstr = prompt
+            self.promptstr = str(prompt.read())
         print (f"promptstr: {self.promptstr}")
         with open(f"{prompt}.state.json") as state:
             self.promptstate = json.load(state)
