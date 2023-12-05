@@ -47,10 +47,10 @@ class LolaSDK:
         ## extract the file promp.hbr and the file state.js from the root path
         with open(f"{prompt}.hbr") as prompt:
             self.promptstr = str(prompt.read())
-        print (f"promptstr: {self.promptstr}")
+        print (f"promptstr: ok")
         with open(f"{prompt}.state.json") as state:
             self.promptstate = json.load(state)
-        print (f"promptstate: {self.promptstate}")
+        print (f"promptstate: ok")
         promptManager = LolaPromptManager(lola_token=self.lola_token, prompter_url=self.prompter_url)
         try:
             promptManager.publishPrompt(promptid=promptId,promptName=promptId,promptFileContent=self.promptstr,state=self.promptstate)
