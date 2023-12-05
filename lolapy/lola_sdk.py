@@ -45,14 +45,14 @@ class LolaSDK:
         print(f'REDIS_URL: {self.redis_url}')   
     def onInitilize(self, promptId, prompt):
         ## extract the file promp.hbr and the file state.js from the root path
-        with open(f"${prompt}.hbr") as prompt:
+        with open(f"{prompt}.hbr") as prompt:
             self.promptstr = prompt
-        with open(f"${prompt}.state.json") as state:
+        with open(f"{prompt}.state.json") as state:
             self.promptstate = json.load(state)
         
         promptManager = LolaPromptManager(lola_token=self.lola_token, prompter_url=self.prompter_url)
         try:
-            promptManager.publishPrompt(promptid=promptId,promptName=prompt,promptFileContent=self.promptstr,state=self.promptstate)
+            promptManager.publishPrompt(promptid=promptId,promptName=promptId,promptFileContent=self.promptstr,state=self.promptstate)
         except Exception as e:
             print(f'Error publishing prompt: {e}')
         pass     
