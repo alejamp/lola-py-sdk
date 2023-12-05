@@ -21,7 +21,7 @@ class LolaPromptManager:
             "enabled": True
         }
         
-        headers = {'Authorization': f'Bearer ${self.lola_token}', 'Content-Type': 'application/json'}
+        headers = {'Authorization': f'Bearer {self.lola_token}', 'Content-Type': 'application/json'}
         print(str(headers))
         responsePublishPrompt = requests.post(url, headers=headers, json=body)
         responsePublishPrompt.raise_for_status()
