@@ -45,8 +45,9 @@ class LolaSDK:
         print(f'REDIS_URL: {self.redis_url}')   
     def onInitilize(self, promptId, prompt):
         ## extract the file promp.hbr and the file state.js from the root path
-        with open(f"{prompt}.hbr") as prompt:
-            self.promptstr = str(prompt.read())
+        with open(f"{prompt}.hbr") as promptFile:
+            self.promptstr = str(promptFile.read())
+        
         print (f"promptstr: ok")
         with open(f"{prompt}.state.json") as state:
             self.promptstate = json.load(state)
