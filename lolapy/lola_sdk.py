@@ -27,7 +27,9 @@ class LolaSDK:
         self.host = host
         self.port = port
         self.path = path
-        self.cmd_handlers = {}
+        self.cmd_handlers = {}        
+        # CLIENT_COMMAND by Ale
+        self.client_cmd_handlers = {}
         self.event_handlers = {}
         self.notification_handlers = {}
         self.timeout_handler = None
@@ -36,13 +38,14 @@ class LolaSDK:
         self.timeout = None
         self.redis_url = redis_url
         self.promptstr = ""
-        self.promptstate = {}
+        self.promptstate = {}        
         # print init info
         print(f'LOLA_TOKEN: {self.lola_token}')
         print(f'WEBHOOK_URL: {self.webhook_url}')
         print(f'PROMPTER_URL: {self.prompter_url}')
         print(f'HOST: {self.host}:{self.port}')
-        print(f'REDIS_URL: {self.redis_url}')   
+        print(f'REDIS_URL: {self.redis_url}') 
+
     def onInitilize(self, promptId, prompt):
         ## extract the file promp.hbr and the file state.js from the root path
         with open(f"{prompt}.hbr") as promptFile:
@@ -57,7 +60,7 @@ class LolaSDK:
             promptManager.publishPrompt(promptid=promptId,promptName=promptId,promptFileContent=self.promptstr,state=self.promptstate)
         except Exception as e:
             print(f'Error publishing prompt: {e}')
-        pass     
+        pass          
 
     def listen(self, debug=False):
 
@@ -139,6 +142,14 @@ class LolaSDK:
             return handler
         return decorator
     
+    # CLIENT_COMMAND by Ale
+    def on_client_command(self, name):
+        def decorator(handler):
+            self.add_event('onClientCommand')
+            self.client_cmd_handlers[name] = handler
+            return handler
+        return decorator
+    
     def on_event(self, name):
         def decorator(handler):
             self.add_event(name)
@@ -187,6 +198,19 @@ class LolaSDK:
             if notification_name in self.notification_handlers:
                 return self.notification_handlers[notification_name](session, ctx, event)
         
+        # CLIENT_COMMAND by Ale
+        if event_type == 'onClientCommand':
+            command_name = event['data'].get('name')
+            if command_name in self.client_cmd_handlers:
+                return self.client_cmd_handlers[command_name](session, ctx, event)
+            
+            # no handler found
+            # print(f'No handler found for command: {command_name}')
+            print(f'{Fore.YELLOW}WRN: No handler found for command: {command_name}{Style.RESET_ALL}')
+            # raise error no handler for client command
+            raise NotImplementedError(f'No handler found for command: {command_name}')
+            
+
             
         if event_type in self.event_handlers:
             return self.event_handlers[event_type](session, ctx, event['data']['message'])
@@ -194,6 +218,7 @@ class LolaSDK:
         return self.on_error(f'Unknown event type: {event_type}')
     
     def on_error(self, error):
+        print(f'{Fore.YELLOW}WRN: {error}{Style.RESET_ALL}')
         raise NotImplementedError
 
 
