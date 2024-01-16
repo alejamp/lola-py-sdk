@@ -8,3 +8,4 @@ from .lola_in_memory_session_store import InMemorySessionStore
 from .lola_redis_session_store import RedisSessionStore
 from .lola_timeout import LolaTimeout
 from .lola_response import ResponseImage, ResponseText
+from .lola_middleware import Middleware

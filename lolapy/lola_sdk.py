@@ -5,6 +5,8 @@ import json
 from colorama import Fore, Style
 from lolapy.lola_context import LolaContext
 from lolapy.lola_logtail import connectLogTail, syncConnectLogTail
+from lolapy.lola_middleware import Middleware
+from lolapy.lola_response import ResponseText
 from lolapy.lola_timeout import LolaTimeout
 from lolapy.lola_utils import get_invariant_hash
 from lolapy.lola_prompt_manager import LolaPromptManager
@@ -35,6 +37,7 @@ class LolaSDK:
         self.timeout_handler = None
         self.callback_handlers = {}
         self.events = []
+        self.middlewares = []
         self.timeout = None
         self.redis_url = redis_url
         self.promptstr = ""
@@ -125,6 +128,25 @@ class LolaSDK:
 
         app.run(host=self.host, port=self.port)
 
+
+    # # private method
+    # def __process_middlewares(self, session, ctx, req):
+    #     for middleware in self.middlewares:
+    #         middleware.process_request(session, ctx, req)
+
+
+    def register_middleware(self, middleware: Middleware):
+        """Register a middleware to process events and commands or client commands.
+        It supports multiple middlewares."""
+        if not isinstance(middleware, Middleware):
+            raise TypeError('Middleware must be an instance of Middleware class')
+        
+        if middleware not in self.middlewares:
+            self.middlewares.append(middleware)
+        else:
+            raise Exception('Middleware already registered')
+
+    
     def context(self, session):
         return LolaContext(session, self.lola_token, self.prompter_url, self.timeout, self.redis_url)
     
@@ -188,6 +210,19 @@ class LolaSDK:
 
         print(f'Event data: {event["data"]}')
 
+        # process middlewares
+        skip = False
+        for middleware in self.middlewares:
+            res = middleware.process_request(session, ctx, event)
+            # if middleware returns False, skip event processing
+            # keep processing if middleware returns None or True
+            if res == False:
+                skip = True
+
+        # skip event processing if a middleware returns False
+        if skip:
+            return ResponseText('').DisableAI().Send()
+
         if event_type == 'onCommand':
             command_name = event['data'].get('name')
             if command_name in self.cmd_handlers:
@@ -213,7 +248,10 @@ class LolaSDK:
 
             
         if event_type in self.event_handlers:
-            return self.event_handlers[event_type](session, ctx, event['data']['message'])
+            if self.handler_has_4_args(self.event_handlers[event_type]):
+                return self.event_handlers[event_type](session, ctx, event['data']['message'], event)
+            else:
+                return self.event_handlers[event_type](session, ctx, event['data']['message'])
         
         return self.on_error(f'Unknown event type: {event_type}')
     
@@ -222,5 +260,7 @@ class LolaSDK:
         raise NotImplementedError
 
 
+    def handler_has_4_args(self, handler):
+        return handler.__code__.co_argcount == 4
 
 
