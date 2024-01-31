@@ -65,7 +65,7 @@ class LolaSDK:
             print(f'Error publishing prompt: {e}')
         pass          
 
-    def listen(self, debug=False):
+    def listen(self, debug=False, disableWebServer=False):
 
         if not self.lola_token:
             raise Exception('LOLA_TOKEN not set')
@@ -91,6 +91,11 @@ class LolaSDK:
         if self.timeout:
             self.timeout.start()
 
+        # Skip web server if Flask disableWebServer is True
+        if disableWebServer == True:
+            print(f'{Fore.YELLOW}WRN: Lola\'s Flask Web server disabled{Style.RESET_ALL}')
+            return
+        
         # Start Flask server
         app = Flask(__name__)
 
@@ -109,14 +114,8 @@ class LolaSDK:
 
             print(request)
             event = request.json
-            if event is None:
-                return self.on_error('Invalid event') 
-            
-            print(f'Received event: {event}')  
-            
-            session = self.__buildSession(event['lead'])
-            ctx = self.context(session)
-            result = self.__process_event(session, ctx, event)
+
+            result = self.process_event(event)
             return json.dumps(result), 200, {'Content-Type': 'application/json'}
 
 
@@ -128,6 +127,15 @@ class LolaSDK:
 
         app.run(host=self.host, port=self.port)
 
+
+    def process_event(self, event):
+        if event is None:
+            return self.on_error('Invalid event') 
+
+        print(f'Processing event: {event}')  
+        session = self.__buildSession(event['lead'])
+        ctx = self.context(session)
+        return self.__process_event(session, ctx, event)
 
     # # private method
     # def __process_middlewares(self, session, ctx, req):
