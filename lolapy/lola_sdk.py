@@ -128,7 +128,7 @@ class LolaSDK:
         app.run(host=self.host, port=self.port)
 
 
-    async def process_event(self, event):
+    def process_event(self, event):
         if event is None:
             return self.on_error('Invalid event') 
 
