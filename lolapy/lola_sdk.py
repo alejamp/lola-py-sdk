@@ -3,11 +3,13 @@ import requests
 from flask import Flask, request
 import json
 from colorama import Fore, Style
+from lolapy.lola_agent_manager import LolaAgentManager
 from lolapy.lola_context import LolaContext
 from lolapy.lola_logtail import connectLogTail, syncConnectLogTail
 from lolapy.lola_middleware import Middleware
 from lolapy.lola_response import ResponseText
 from lolapy.lola_timeout import LolaTimeout
+from lolapy.lola_token import decode_lola_token
 from lolapy.lola_utils import get_invariant_hash
 from lolapy.lola_prompt_manager import LolaPromptManager
 
@@ -41,13 +43,18 @@ class LolaSDK:
         self.timeout = None
         self.redis_url = redis_url
         self.promptstr = ""
-        self.promptstate = {}        
+        self.promptstate = {}
+        self.agent_manager = LolaAgentManager(lola_token, prompter_url)
         # print init info
         print(f'LOLA_TOKEN: {self.lola_token}')
         print(f'WEBHOOK_URL: {self.webhook_url}')
         print(f'PROMPTER_URL: {self.prompter_url}')
         print(f'HOST: {self.host}:{self.port}')
-        print(f'REDIS_URL: {self.redis_url}') 
+        print(f'REDIS_URL: {self.redis_url}')
+
+    def request_chat_completion(self, userId, text):
+        self.agent_manager.completion(userId, text)
+
 
     def onInitilize(self, promptId, prompt):
         ## extract the file promp.hbr and the file state.js from the root path
@@ -136,11 +143,6 @@ class LolaSDK:
         session = self.__buildSession(event['lead'])
         ctx = self.context(session)
         return self.__process_event(session, ctx, event)
-
-    # # private method
-    # def __process_middlewares(self, session, ctx, req):
-    #     for middleware in self.middlewares:
-    #         middleware.process_request(session, ctx, req)
 
 
     def register_middleware(self, middleware: Middleware):

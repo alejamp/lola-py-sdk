@@ -44,7 +44,12 @@ class AuthMiddleware(Middleware):
         # Example: Processing a Text Message
         # ------------------------------------
         # extract text from ['data']['message']['text'] dont fail if not present message or text
-        text = req['data'].get('message', {}).get('text', None)
+        msg = req.get('data', {}).get('message', {})
+        # if msg is a string
+        if isinstance(msg, str):
+            return True
+        
+        text = msg.get('text', None)
         if text == 'skip':
             ctx.messanger.send_text_message('skipping processing this event', blend=False)
             # Note that we are returning False here

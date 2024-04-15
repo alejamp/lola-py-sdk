@@ -59,6 +59,19 @@ lola.register_middleware(auth_middleware)
 
 
 
+@lola.on_event('onAgentResponse')
+def handle_new_conversation(session, ctx: LolaContext, msg):
+    print(f'Got Agent Response message!!!!!')
+    print(msg)
+    ctx.messanger.send_text_message('>> Agent: ' + msg, blend=False, appendToHistory=False)
+
+
+@lola.on_event('onTextMessage')
+def handle_text_message(session, ctx: LolaContext, msg, req):
+    print(f'Got text message: {msg["text"]}')
+    lola.request_chat_completion("123", msg['text'])
+
+
 # Hook on every new conversation started by a new user
 @lola.on_event('onNewConversation')
 def handle_new_conversation(session, ctx: LolaContext, msg):
@@ -78,10 +91,6 @@ def handle_new_conversation(session, ctx: LolaContext, msg):
     return ResponseImage(img_url, "Welcome to the game!").DisableAI().Send()
 
 
-# Hook on every message received by Lola from the user
-@lola.on_event('onTextMessage')
-def handle_text_message(session, ctx: LolaContext, msg, req):
-    print(f'Got text message: {msg["text"]}')
 
 
 @lola.on_client_command('/ping')
