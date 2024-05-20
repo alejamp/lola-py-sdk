@@ -38,6 +38,12 @@ class ResponseText:
                 "blend": False
             },
         }
+        
+    def HookResponse(self, metadata: dict = None):
+        self.response["options"]["hookResponse"] = True
+        if metadata:
+            self.response["options"]["metadata"] = metadata
+        return self
 
     def DisableAI(self):
         self.response["options"]["disableAI"] = True
